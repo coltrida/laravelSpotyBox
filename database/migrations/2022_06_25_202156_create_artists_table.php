@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('artists', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->float('cost')->nullable();
+            $table->string('stripe_id')->nullable();
             $table->timestamps();
         });
     }

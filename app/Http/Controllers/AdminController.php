@@ -32,7 +32,27 @@ class AdminController extends Controller
 
     public function insertArtist(Request $request)
     {
-        Artist::create($request->all());
+        $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
+        $prdocutStripe = $stripe->products->create(
+            [
+                'name' => 'Discography of '.$request->name,
+                'description' => 'Discography',
+                'metadata' => [
+                    'tipo' => 'discography'
+                ],
+                'default_price_data' => [
+                    'unit_amount' => (float)$request->cost * 100,
+                    'currency' => 'usd',
+                ],
+                'expand' => ['default_price'],
+            ]
+        );
+
+        Artist::create([
+            'name' => $request->name,
+            'cost' => (float)$request->cost,
+            'stripe_id' => $prdocutStripe->id,
+        ]);
         return Redirect::back();
     }
 
@@ -50,7 +70,7 @@ class AdminController extends Controller
         $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
         $prdocutStripe = $stripe->products->create(
             [
-                'name' => $request->name,
+                'name' => 'Album '.$request->name,
                 'description' => 'Album',
                 'metadata' => [
                     'tipo' => 'album'
@@ -98,7 +118,7 @@ class AdminController extends Controller
         $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
         $prdocutStripe = $stripe->products->create(
             [
-                'name' => $request->name,
+                'name' => 'Song '.$request->name,
                 'description' => 'Song',
                 'metadata' => [
                     'tipo' => 'song'
