@@ -41,14 +41,28 @@ class UserController extends Controller
         }
     }
 
+    public function paymentDiscography(Artist $artist)
+    {
+        return view('user.payment', [
+            'item' => $artist,
+            'tipologia' => 'discography'
+        ]);
+    }
+
     public function paymentAlbum(Album $album)
     {
-        return view('user.payment', ['item' => $album]);
+        return view('user.payment', [
+            'item' => $album,
+            'tipologia' => 'album'
+        ]);
     }
 
     public function paymentSong(Song $song)
     {
-        return view('user.payment', ['item' => $song]);
+        return view('user.payment', [
+            'item' => $song,
+            'tipologia' => 'song'
+        ]);
     }
 
     public function purchase(Request $request)
@@ -57,7 +71,14 @@ class UserController extends Controller
             10000, $request->paymentMethodId
         );*/
 
-        $album = Album::find($request->input('idAlbum'));
+        if ($request->input('tipologia') === 'album'){
+            $item = Album::find($request->input('idItem'));
+        } elseif ($request->input('tipologia') === 'discography'){
+            $item = Artist::find($request->input('idItem'));
+        } else {
+            $item = Song::find($request->input('idItem'));
+        }
+
 
         \Stripe\Stripe::setApiKey('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
 
@@ -90,12 +111,23 @@ class UserController extends Controller
             $stripe = new \Stripe\StripeClient(
                 'sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26'
             );
-            $idPrice = $stripe->prices->all(['product' => $album->stripe_id])->data[0]->id;
+            $idPrice = $stripe->prices->all(['product' => $item->stripe_id])->data[0]->id;
             auth()->user()->invoicePrice($idPrice, 1);
+
+            if ($request->input('tipologia') === 'album'){
+                auth()->user()->albumsales()->attach($item->id);
+            } elseif ($request->input('tipologia') === 'discography'){
+                auth()->user()->artistsales()->attach($item->id);
+            } else {
+                auth()->user()->songsales()->attach($item->id);
+            }
 
             \Session::flash ( 'success-message', 'Payment done successfully !' );
 
-            return view ( 'user.payment', ['item' => $album]);
+            return view ( 'user.payment', [
+                'item' => $item,
+                'tipologia' => $request->input('tipologia')
+            ]);
         } catch ( \Stripe\Error\Card $e ) {
             \Session::flash ( 'fail-message', $e->get_message() );
             return view ( 'payment' );

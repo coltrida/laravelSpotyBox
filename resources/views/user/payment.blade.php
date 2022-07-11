@@ -1,58 +1,3 @@
-{{--<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Payment</title>
-</head>
-<body>
-    <form action="{{route('purchase')}}" method="post">
-        @csrf
-        <input id="card-holder-name" type="text">
-
-        <!-- Stripe Elements Placeholder -->
-        <div id="card-element"></div>
-
-        <button id="card-button">
-            Process Payment
-        </button>
-    </form>
-
-
-    <script src="https://js.stripe.com/v3/"></script>
-
-    <script>
-        const stripe = Stripe('stripe-public-key');
-
-        const elements = stripe.elements();
-        const cardElement = elements.create('card');
-
-        cardElement.mount('#card-element');
-
-        const cardHolderName = document.getElementById('card-holder-name');
-        const cardButton = document.getElementById('card-button');
-
-        cardButton.addEventListener('click', async (e) => {
-            const { paymentMethod, error } = await stripe.createPaymentMethod(
-                'card', cardElement, {
-                    billing_details: { name: cardHolderName.value }
-                }
-            );
-
-            if (error) {
-                // Display "error.message" to the user...
-            } else {
-                // The card has been verified successfully...
-            }
-        });
-    </script>
-</body>
-</html>--}}
-
-
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -67,9 +12,11 @@
 <body>
 <div class="container" style="margin-top: 30px">
     <div class='row'>
-        <div class='col-md-4'>
-            <img src="{{asset("/storage/covers/$item->id.jpg")}}" alt="">
-        </div>
+        @if($tipologia === 'album')
+            <div class='col-md-4' style="margin-right: 50px">
+                <img  src="{{asset("/storage/covers/$item->id.jpg")}}" alt="">
+            </div>
+        @endif
         <div class='col-md-4'>
             <script src='https://js.stripe.com/v2/' type='text/javascript'></script>
             <form accept-charset="UTF-8" action="{{route('purchase')}}" class="require-validation"
@@ -91,8 +38,9 @@
                     </div>
                 </div>
 
-{{--                <input type="hidden" name="idConcert" id="idConcert" value="{{$idConcert}}">--}}
-                <input type="hidden" name="idAlbum" value="{{$item->id}}">
+                <input type="hidden" name="idItem" value="{{$item->id}}">
+                <input type="hidden" name="tipologia" value="{{$tipologia}}">
+
                 <div class='form-row'>
                     <div class='col-xs-4 form-group cvc required'>
                         <label class='control-label'>CVC</label> <input

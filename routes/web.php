@@ -34,6 +34,7 @@ Route::group(
 });
 
 Route::group(['middleware' => ['auth']], function () {
+    Route::get('/paymentDiscography/{artist}', [UserController::class, 'paymentDiscography'])->name('paymentDiscography');
     Route::get('/paymentAlbum/{album}', [UserController::class, 'paymentAlbum'])->name('paymentAlbum');
     Route::get('/paymentSong/{song}', [UserController::class, 'paymentSong'])->name('paymentSong');
     Route::post('/purchase', [UserController::class, 'purchase'])->name('purchase');

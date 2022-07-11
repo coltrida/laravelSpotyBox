@@ -1,5 +1,5 @@
-@extends('dashboard')
-@section('title', 'Songs')
+@extends('layouts.style2')
+
 @section('content')
     @foreach($albums as $album)
         @if(count($album->songs) > 0)
