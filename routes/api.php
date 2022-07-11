@@ -13,6 +13,8 @@ Route::get('migrate', function (){
 });
 
 Route::get('albums', [AlbumController::class, 'index']);
+Route::get('lastAlbums', [AlbumController::class, 'lastAlbums']);
+Route::get('albumsBestSeller', [AlbumController::class, 'albumsBestSeller']);
 Route::get('albumsBought/{userId}', [AlbumController::class, 'albumsBought']);
 Route::get('artistBought/{userId}', [AlbumController::class, 'artistBought']);
 Route::get('songs/{albumId}', [AlbumController::class, 'songs']);
@@ -21,3 +23,4 @@ Route::get('allSongsBought/{userId}', [AlbumController::class, 'allSongsBought']
 Route::get('prefSw/{songId}/{userId}', [AlbumController::class, 'prefSw']);
 Route::get('prefs/{userId}', [AlbumController::class, 'prefs']);
 Route::post('login', [AlbumController::class, 'login']);
+Route::post('/purchase', [AlbumController::class, 'purchase']);

@@ -14,7 +14,9 @@
                 @endforeach
             </select>
         </div>
-
+        <div class="col-1">
+            <input type="number" step="0.1" class="form-control" id="cost" placeholder="cost" name="cost">
+        </div>
         <div class="col-3">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="music">music</label>
@@ -34,7 +36,8 @@
                 <thead>
                 <tr>
                     <th scope="col" class="col-2">#</th>
-                    <th scope="col" class="col-6">Name</th>
+                    <th scope="col" class="col-4">Name</th>
+                    <th scope="col" class="col-2">Costo</th>
                     <th scope="col" class="col-2">Actions</th>
                 </tr>
                 </thead>
@@ -43,6 +46,7 @@
                     <tr>
                         <th scope="row">{{$song->id}}</th>
                         <td>{{$song->name}}</td>
+                        <td>$ {{$song->cost}}</td>
                         <td>
                             <form action="{{route('deleteSong', $song->id)}}" method="POST">
                                 @csrf

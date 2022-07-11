@@ -21,6 +21,9 @@ class ArtistSeeder extends Seeder
             ],
             [
                 'name' => 'Vasco Rossi'
+            ],
+            [
+                'name' => 'Shakira'
             ]
         ]);
     }

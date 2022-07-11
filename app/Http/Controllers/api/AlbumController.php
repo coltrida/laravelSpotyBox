@@ -18,9 +18,27 @@ class AlbumController extends Controller
         }])->get();
     }
 
+    public function lastAlbums()
+    {
+        return Album::latest()->with(['artist', 'songs' => function($p){
+            $p->with('album', 'preferites:id');
+        }])->take(3)->get();
+    }
+
+    public function albumsBestSeller()
+    {
+        return Album::
+            with(['artist', 'songs' => function($q){
+                $q->with(['album', 'preferites:id']);
+        }])
+                ->withCount('albumsales')
+                ->orderBy('albumsales_count', 'DESC')
+                ->take(3)
+                ->get();
+    }
+
     public function albumsBought($userId)
     {
-       // return Album::with('songs', 'artist')->get();
         return User::with(['albumsales' => function($q){
             $q->with(['artist', 'songs' => function($p){
                 $p->with('album', 'preferites:id');
@@ -100,5 +118,75 @@ class AlbumController extends Controller
             'token' => $token,
             'stato' => 'successo'
         ];
+    }
+
+    public function purchase(Request $request)
+    {
+        /*$stripeCharge = $request->user()->charge(
+            10000, $request->paymentMethodId
+        );*/
+
+        $album = Album::with('artist')->find($request->input('idAlbum'));
+
+        \Stripe\Stripe::setApiKey('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
+
+        $user = User::find($request->input('userId'));
+
+        $customer = null;
+        if ($user->stripe_id) {
+            $customer = \Stripe\Customer::all([
+                "email" => $user->email
+            ])->first();
+        }
+
+        if (!$customer) {
+            $customer = \Stripe\Customer::create(array(
+                'name' => $user->name,
+                'email' => $user->email,
+                'source' => $request->input('stripeToken'),
+            ));
+            $user->stripe_id = $customer["id"];
+            $user->save();
+        }
+
+        try {
+            /*\Stripe\Charge::create ( array (
+                "amount" => $request->input('costo'),
+                "currency" => "usd",
+                "customer" =>  $customer["id"],
+                "description" => $request->input('description')
+            ) );*/
+
+            $stripe = new \Stripe\StripeClient(
+                'sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26'
+            );
+            $idPrice = $stripe->prices->all(['product' => $album->stripe_id])->data[0]->id;
+            $stripe->invoiceItems->create([
+                'customer' => $user->stripe_id,
+                'price' => $idPrice,
+            ]);
+            $invoice = $stripe->invoices->create([
+                'customer' => $user->stripe_id,
+            ]);
+            $stripe->invoices->pay(
+                $invoice->id,
+                []
+            );
+          //  return $stripe->customers->retrieve($user->stripe_id);
+          //  $user->invoicePrice($idPrice, 1,);
+          //  return $stripe->customers->all();
+            $user->albumsales()->attach($album->id);
+            $user->artistsales()->attach($album->artist->id);
+            return [
+                'message' => ['Payment done successfully !'],
+                'stato' => 'ok'
+            ];
+        } catch ( \Stripe\Error\Card $e ) {
+//            \Session::flash ( 'fail-message', $e->get_message() );
+            return [
+                'message' => [$e->get_message()],
+                'stato' => 'error'
+            ];
+        }
     }
 }

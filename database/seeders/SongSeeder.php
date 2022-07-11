@@ -44,6 +44,14 @@ class SongSeeder extends Seeder
                 'name' => 'Bollicine',
                 'album_id' => 4
             ],
+            [
+                'name' => 'Te felicito',
+                'album_id' => 5
+            ],
+            [
+                'name' => 'Dont You Worry',
+                'album_id' => 5
+            ],
         ]);
     }
 }

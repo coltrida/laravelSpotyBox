@@ -20,5 +20,8 @@ class SongsalesSeeder extends Seeder
 
         $user = User::find(3);
         $user->songsales()->attach([6,7]);
+
+        $user = User::find(4);
+        $user->songsales()->attach([8,9]);
     }
 }

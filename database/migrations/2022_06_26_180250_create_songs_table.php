@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->float('cost')->default(0);
             $table->foreignId('album_id')->constrained('albums')->onDelete('cascade');
+            $table->string('stripe_id')->nullable();
             $table->timestamps();
         });
     }

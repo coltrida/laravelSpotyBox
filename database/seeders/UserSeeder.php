@@ -42,6 +42,14 @@ class UserSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
+            [
+                'name' => 'cacao3',
+                'email' => 'cacao3@cacao3.it',
+                'role' => 'user',
+                'password' => Hash::make('123456'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
         ]);
     }
 }

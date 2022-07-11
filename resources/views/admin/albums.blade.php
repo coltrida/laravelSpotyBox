@@ -14,6 +14,9 @@
                 @endforeach
             </select>
         </div>
+        <div class="col-1">
+            <input type="number" step="0.1" class="form-control" id="cost" placeholder="cost" name="cost">
+        </div>
         <div class="col-4">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="cover">Cover</label>
@@ -32,8 +35,9 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col" class="col-2">#</th>
-                    <th scope="col" class="col-4">Name</th>
+                    <th scope="col" class="col-1">#</th>
+                    <th scope="col" class="col-3">Name</th>
+                    <th scope="col" class="col-2">Cost</th>
                     <th scope="col" class="col-2">Cover</th>
                     <th scope="col" class="col-2 text-center">Nr. Songs</th>
                     <th scope="col" class="col-2 text-center">Actions</th>
@@ -44,12 +48,13 @@
                     <tr>
                         <th scope="row">{{$album->id}}</th>
                         <td>{{$album->name}}</td>
+                        <td>$ {{$album->cost}}</td>
                         <td><img src="{{asset('storage/covers/'.$album->id.'.jpg')}}" alt="cover" width="200"></td>
                         <td class="text-center">{{$album->songs_count}}</td>
                         <td>
                             <div class="d-flex justify-content-around">
                                 <div>
-                                    <a class="btn btn-success" href="{{route('songs', $album->id)}}" title="view songs">
+                                    <a class="btn btn-success" href="{{route('admin.songs', $album->id)}}" title="view songs">
                                         <i class="fa-solid fa-music"></i>
                                     </a>
                                 </div>
