@@ -49,7 +49,7 @@
                         <th scope="row">{{$album->id}}</th>
                         <td>{{$album->name}}</td>
                         <td>$ {{$album->cost}}</td>
-                        <td><img src="{{asset('storage/covers/'.$album->id.'.jpg')}}" alt="cover" width="200"></td>
+                        <td><img src="{{$album->pathaws}}" width="200" alt=""></td>
                         <td class="text-center">{{$album->songs_count}}</td>
                         <td>
                             <div class="d-flex justify-content-around">

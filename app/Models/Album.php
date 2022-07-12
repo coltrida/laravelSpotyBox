@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * App\Models\Album
@@ -32,6 +33,11 @@ class Album extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function getPathawsAttribute()
+    {
+        return Storage::disk('s3')->url("/covers/$this->id.jpg");
+    }
 
     public function songs()
     {
