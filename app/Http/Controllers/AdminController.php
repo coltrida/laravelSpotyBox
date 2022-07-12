@@ -32,7 +32,7 @@ class AdminController extends Controller
 
     public function insertArtist(Request $request)
     {
-        /*$stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
+        $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
         $prdocutStripe = $stripe->products->create(
             [
                 'name' => 'Discography of '.$request->name,
@@ -46,19 +46,18 @@ class AdminController extends Controller
                 ],
                 'expand' => ['default_price'],
             ]
-        );*/
+        );
 
         Artist::create([
             'name' => $request->name,
             'cost' => (float)$request->cost,
-            'stripe_id' => /*$prdocutStripe->id*/ '333',
+            'stripe_id' => $prdocutStripe->id,
         ]);
         return Redirect::back();
     }
 
     public function albums()
     {
-      //return Storage::disk('s3')->response('/covers/1.jpg');
         return view('admin.albums', [
             'artists' => Artist::with(['albums' => function($q){
                 $q->withCount('songs');
@@ -68,7 +67,7 @@ class AdminController extends Controller
 
     public function insertAlbum(Request $request)
     {
-       /* $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
+        $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
         $prdocutStripe = $stripe->products->create(
             [
                 'name' => 'Album '.$request->name,
@@ -82,12 +81,12 @@ class AdminController extends Controller
                 ],
                 'expand' => ['default_price'],
             ]
-        );*/
+        );
 
         $album = Album::create([
             'name' => $request->name,
             'cost' => (float)$request->cost,
-            'stripe_id' => /*$prdocutStripe->id*/ '11',
+            'stripe_id' => $prdocutStripe->id,
             'artist_id' => $request->artist_id
         ]);
 
@@ -370,8 +369,5 @@ class AdminController extends Controller
 
         http_response_code(200);
     }
-
-
-
 
 }
