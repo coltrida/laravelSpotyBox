@@ -32,8 +32,19 @@ class AdminController extends Controller
 
     public function insertArtist(Request $request)
     {
+        $prdocutStripe = $this->saveArtistStripe($request);
+        Artist::create([
+            'name' => $request->name,
+            'cost' => (float)$request->cost,
+            'stripe_id' => isset($prdocutStripe->id) ?? null,
+        ]);
+        return Redirect::back();
+    }
+
+    public function saveArtistStripe($request)
+    {
         $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
-        $prdocutStripe = $stripe->products->create(
+        return $stripe->products->create(
             [
                 'name' => 'Discography of '.$request->name,
                 'description' => 'Discography',
@@ -47,13 +58,6 @@ class AdminController extends Controller
                 'expand' => ['default_price'],
             ]
         );
-
-        Artist::create([
-            'name' => $request->name,
-            'cost' => (float)$request->cost,
-            'stripe_id' => $prdocutStripe->id,
-        ]);
-        return Redirect::back();
     }
 
     public function albums()
@@ -67,8 +71,27 @@ class AdminController extends Controller
 
     public function insertAlbum(Request $request)
     {
+        $productStripe = $this->saveAlbumStripe($request);
+        $album = Album::create([
+            'name' => $request->name,
+            'cost' => (float)$request->cost,
+            'stripe_id' => isset($productStripe->id) ?? null,
+            'artist_id' => $request->artist_id
+        ]);
+
+        if ($request->hasFile('cover')) {
+            $file = $request->file('cover');
+            $filename = $album->id . '.' . $file->extension();
+           $file->storeAs('covers',$filename, 's3');
+        }
+
+        return Redirect::back();
+    }
+
+    public function saveAlbumStripe($request)
+    {
         $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
-        $prdocutStripe = $stripe->products->create(
+        return $stripe->products->create(
             [
                 'name' => 'Album '.$request->name,
                 'description' => 'Album',
@@ -82,21 +105,6 @@ class AdminController extends Controller
                 'expand' => ['default_price'],
             ]
         );
-
-        $album = Album::create([
-            'name' => $request->name,
-            'cost' => (float)$request->cost,
-            'stripe_id' => $prdocutStripe->id,
-            'artist_id' => $request->artist_id
-        ]);
-
-        if ($request->hasFile('cover')) {
-            $file = $request->file('cover');
-            $filename = $album->id . '.' . $file->extension();
-           $file->storeAs('covers',$filename, 's3');
-        }
-
-        return Redirect::back();
     }
 
     public function songs($idAlbum = null)
@@ -114,8 +122,28 @@ class AdminController extends Controller
 
     public function insertSong(Request $request)
     {
+        $prdocutStripe = $this->saveSongStripe($request);
+        $song = Song::create([
+            'name' => $request->name,
+            'cost' => (float)$request->cost,
+            'stripe_id' => isset($prdocutStripe->id) ?? null,
+            'album_id' => $request->album_id
+        ]);
+
+        if ($request->hasFile('music')) {
+            $file = $request->file('music');
+            $filename = $song->id . '.' . $file->extension();
+        //    $file->storeAs('public/songs', $filename);
+            Storage::disk('public')->putFileAs('/songs', $file, $filename);
+        }
+
+        return Redirect::back();
+    }
+
+    public function saveSongStripe($request)
+    {
         $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
-        $prdocutStripe = $stripe->products->create(
+        return $stripe->products->create(
             [
                 'name' => 'Song '.$request->name,
                 'description' => 'Song',
@@ -129,22 +157,6 @@ class AdminController extends Controller
                 'expand' => ['default_price'],
             ]
         );
-
-        $song = Song::create([
-            'name' => $request->name,
-            'cost' => (float)$request->cost,
-            'stripe_id' => $prdocutStripe->id,
-            'album_id' => $request->album_id
-        ]);
-
-        if ($request->hasFile('music')) {
-            $file = $request->file('music');
-            $filename = $song->id . '.' . $file->extension();
-        //    $file->storeAs('public/songs', $filename);
-            Storage::disk('public')->putFileAs('/songs', $file, $filename);
-        }
-
-        return Redirect::back();
     }
 
     public function deleteSong($idSong)

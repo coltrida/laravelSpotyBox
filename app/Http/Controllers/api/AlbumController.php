@@ -57,6 +57,26 @@ class AlbumController extends Controller
         }])->find($userId)->artistsales;
     }
 
+    public function lastAlbumsOfMyartistsBought($userId)
+    {
+        $artists = User::with(['artistsales' => function($q) use($userId){
+            $q->with(['albums' => function($d) use($userId){
+                $d->latest()->with(['artist', 'songs' => function($f){
+                    $f->with('album', 'preferites:id');
+                }]);
+            }]);
+        }])->find($userId)->artistsales->sortBy(function($query){
+            return $query->albums[0]->name;
+        })
+            ->all();
+
+        $collection = collect();
+        foreach ($artists as $artist){
+            $collection = $collection->concat($artist->albums);
+        }
+        return $collection->take(4);
+    }
+
     public function songs($albumId)
     {
         return Album::with(['songs' => function($q){
@@ -98,12 +118,6 @@ class AlbumController extends Controller
     {
         $user = User::where('email', $request->mail)->first();
 
-        /*if($user->ruolo_id === 1){
-            $user->password = Hash::make($password);
-            $user->cleanpassword = $password;
-            $user->save();
-        }*/
-
         if (!$user || !\Hash::check($request->password, $user->password)) {
             return [
                 'message' => ['Le Credenziali non corrispondono'],
@@ -122,15 +136,19 @@ class AlbumController extends Controller
 
     public function purchase(Request $request)
     {
-        /*$stripeCharge = $request->user()->charge(
-            10000, $request->paymentMethodId
-        );*/
-
         $album = Album::with('artist')->find($request->input('idAlbum'));
-
-        \Stripe\Stripe::setApiKey('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
-
         $user = User::find($request->input('userId'));
+        $esitoPagamento = $this->purchaseStripe($album, $user, $request);
+        if ($esitoPagamento->stato === 'ok'){
+            $user->albumsales()->attach($album->id);
+            $user->artistsales()->sync($album->artist->id);
+        }
+        return $esitoPagamento;
+    }
+
+    public function purchaseStripe($album, $user, $request)
+    {
+        \Stripe\Stripe::setApiKey('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
 
         $customer = null;
         if ($user->stripe_id) {
@@ -150,13 +168,6 @@ class AlbumController extends Controller
         }
 
         try {
-            /*\Stripe\Charge::create ( array (
-                "amount" => $request->input('costo'),
-                "currency" => "usd",
-                "customer" =>  $customer["id"],
-                "description" => $request->input('description')
-            ) );*/
-
             $stripe = new \Stripe\StripeClient(
                 'sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26'
             );
@@ -172,17 +183,12 @@ class AlbumController extends Controller
                 $invoice->id,
                 []
             );
-          //  return $stripe->customers->retrieve($user->stripe_id);
-          //  $user->invoicePrice($idPrice, 1,);
-          //  return $stripe->customers->all();
-            $user->albumsales()->attach($album->id);
-            $user->artistsales()->attach($album->artist->id);
+
             return [
                 'message' => ['Payment done successfully !'],
                 'stato' => 'ok'
             ];
         } catch ( \Stripe\Error\Card $e ) {
-//            \Session::flash ( 'fail-message', $e->get_message() );
             return [
                 'message' => [$e->get_message()],
                 'stato' => 'error'

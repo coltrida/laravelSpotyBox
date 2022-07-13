@@ -17,6 +17,7 @@ Route::get('lastAlbums', [AlbumController::class, 'lastAlbums']);
 Route::get('albumsBestSeller', [AlbumController::class, 'albumsBestSeller']);
 Route::get('albumsBought/{userId}', [AlbumController::class, 'albumsBought']);
 Route::get('artistBought/{userId}', [AlbumController::class, 'artistBought']);
+Route::get('lastAlbumsOfMyartistsBought/{userId}', [AlbumController::class, 'lastAlbumsOfMyartistsBought']);
 Route::get('songs/{albumId}', [AlbumController::class, 'songs']);
 Route::get('allSongs', [AlbumController::class, 'allSongs']);
 Route::get('allSongsBought/{userId}', [AlbumController::class, 'allSongsBought']);

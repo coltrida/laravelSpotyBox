@@ -67,10 +67,6 @@ class UserController extends Controller
 
     public function purchase(Request $request)
     {
-        /*$stripeCharge = $request->user()->charge(
-            10000, $request->paymentMethodId
-        );*/
-
         if ($request->input('tipologia') === 'album'){
             $item = Album::find($request->input('idItem'));
         } elseif ($request->input('tipologia') === 'discography'){
@@ -78,7 +74,6 @@ class UserController extends Controller
         } else {
             $item = Song::find($request->input('idItem'));
         }
-
 
         \Stripe\Stripe::setApiKey('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
 
@@ -99,15 +94,8 @@ class UserController extends Controller
             auth()->user()->save();
         }
 
-//        $concert = Concert::find($request->idConcert);
 
         try {
-            /*\Stripe\Charge::create ( array (
-                "amount" => $album->cost * 100,
-                "currency" => "usd",
-                "customer" =>  $customer["id"],
-                "description" => 'album '. $album->name
-            ) );*/
             $stripe = new \Stripe\StripeClient(
                 'sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26'
             );

@@ -16,6 +16,6 @@ class ArtistsalesSeeder extends Seeder
     public function run()
     {
         $user = User::find(2);
-        $user->artistsales()->attach([1]);
+        $user->artistsales()->attach([1,2]);
     }
 }

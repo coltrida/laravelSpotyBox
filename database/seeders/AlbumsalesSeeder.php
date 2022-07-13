@@ -16,7 +16,7 @@ class AlbumsalesSeeder extends Seeder
     public function run()
     {
         $user = User::find(2);
-        $user->albumsales()->attach([1,2,3]);
+        $user->albumsales()->attach([1,2,3,4]);
 
         $user = User::find(3);
         $user->albumsales()->attach([2,4]);
