@@ -4,10 +4,6 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
-    echo ini_get('upload_max_filesize'), ", " , ini_get('post_max_size');
-
-    die();
-
     return view('layouts.style2');
 })->name('welcomePage');
 
