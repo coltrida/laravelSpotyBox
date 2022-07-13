@@ -32,11 +32,11 @@ class AdminController extends Controller
 
     public function insertArtist(Request $request)
     {
-        $prdocutStripe = $this->saveArtistStripe($request);
+        $productStripe = $this->saveArtistStripe($request);
         Artist::create([
             'name' => $request->name,
             'cost' => (float)$request->cost,
-            'stripe_id' => isset($prdocutStripe->id) ?? null,
+            'stripe_id' => isset($productStripe->id) ? $productStripe->id : null,
         ]);
         return Redirect::back();
     }
@@ -75,7 +75,7 @@ class AdminController extends Controller
         $album = Album::create([
             'name' => $request->name,
             'cost' => (float)$request->cost,
-            'stripe_id' => isset($productStripe->id) ?? null,
+            'stripe_id' => isset($productStripe->id) ? $productStripe->id : null,
             'artist_id' => $request->artist_id
         ]);
 
@@ -122,11 +122,11 @@ class AdminController extends Controller
 
     public function insertSong(Request $request)
     {
-        $prdocutStripe = $this->saveSongStripe($request);
+        $productStripe = $this->saveSongStripe($request);
         $song = Song::create([
             'name' => $request->name,
             'cost' => (float)$request->cost,
-            'stripe_id' => isset($prdocutStripe->id) ?? null,
+            'stripe_id' => isset($productStripe->id) ? $productStripe->id : null,
             'album_id' => $request->album_id
         ]);
 
