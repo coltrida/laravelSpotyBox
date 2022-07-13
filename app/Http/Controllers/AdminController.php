@@ -122,11 +122,6 @@ class AdminController extends Controller
 
     public function insertSong(Request $request)
     {
-        echo ini_get('upload_max_filesize'), ", " , ini_get('post_max_size');
-        ini_set('upload_max_filesize', '8M');
-        ini_set('post_max_size', '20M');
-        echo ini_get('upload_max_filesize'), ", " , ini_get('post_max_size');
-        die();
       //  $productStripe = $this->saveSongStripe($request);
         $song = Song::create([
             'name' => $request->name,
