@@ -71,7 +71,7 @@ class AdminController extends Controller
 
     public function insertAlbum(Request $request)
     {
-     //   $productStripe = $this->saveAlbumStripe($request);
+        $productStripe = $this->saveAlbumStripe($request);
         $album = Album::create([
             'name' => $request->name,
             'cost' => (float)$request->cost,
@@ -122,7 +122,7 @@ class AdminController extends Controller
 
     public function insertSong(Request $request)
     {
-      //  $productStripe = $this->saveSongStripe($request);
+        $productStripe = $this->saveSongStripe($request);
         $song = Song::create([
             'name' => $request->name,
             'cost' => (float)$request->cost,
@@ -134,9 +134,6 @@ class AdminController extends Controller
             $file = $request->file('music');
             $filename = $song->id . '.mp3';
 
-         //   dd($file);
-        //    $file->storeAs('public/songs', $filename);
-        //    Storage::disk('public')->putFileAs('/songs', $file, $filename);
             $file->storeAs('songs',$filename, 's3');
         }
 
