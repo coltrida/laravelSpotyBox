@@ -13,6 +13,7 @@ Route::get('migrate', function (){
 });
 
 Route::get('albums', [AlbumController::class, 'index']);
+Route::get('allArtists', [AlbumController::class, 'allArtists']);
 Route::get('lastAlbums', [AlbumController::class, 'lastAlbums']);
 Route::get('albumsBestSeller', [AlbumController::class, 'albumsBestSeller']);
 Route::get('albumsBought/{userId}', [AlbumController::class, 'albumsBought']);

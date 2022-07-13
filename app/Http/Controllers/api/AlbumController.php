@@ -25,6 +25,15 @@ class AlbumController extends Controller
         }])->take(3)->get();
     }
 
+    public function allArtists()
+    {
+        return Artist::with(['albums' => function($a){
+            $a->latest()->with(['artist', 'songs' => function($p){
+                $p->with('album', 'preferites:id');
+            }]);
+        }])->get();
+    }
+
     public function albumsBestSeller()
     {
         return Album::
