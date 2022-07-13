@@ -134,7 +134,8 @@ class AdminController extends Controller
             $file = $request->file('music');
             $filename = $song->id . '.' . $file->extension();
         //    $file->storeAs('public/songs', $filename);
-            Storage::disk('public')->putFileAs('/songs', $file, $filename);
+        //    Storage::disk('public')->putFileAs('/songs', $file, $filename);
+            $file->storeAs('songs',$filename, 's3');
         }
 
         return Redirect::back();
