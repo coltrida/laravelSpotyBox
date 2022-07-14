@@ -104,10 +104,10 @@ class UserController extends Controller
 
             if ($request->input('tipologia') === 'album'){
                 auth()->user()->albumsales()->attach($item->id);
-                auth()->user()->artistsales()->sync($item->artist->id);
+                auth()->user()->artistsales()->syncWithoutDetaching($item->artist->id);
             } elseif ($request->input('tipologia') === 'discography'){
                 auth()->user()->artistsales()->attach($item->id);
-                auth()->user()->albumsales()->sync($item->albums);
+                auth()->user()->albumsales()->syncWithoutDetaching($item->albums);
             } else {
                 auth()->user()->songsales()->attach($item->id);
             }

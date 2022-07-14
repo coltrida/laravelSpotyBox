@@ -162,13 +162,13 @@ class AlbumController extends Controller
         if ($esitoPagamento['stato'] === 'ok'){
             if (isset($request->idAlbum)){
                 $user->albumsales()->attach($item->id);
-                $user->artistsales()->sync($item->artist->id);
-                $user->songsales()->sync($item->songs);
+                $user->artistsales()->syncWithoutDetaching($item->artist->id);
+                $user->songsales()->syncWithoutDetaching($item->songs);
             } elseif (isset($request->idArtist)){
                 $user->artistsales()->attach($item->id);
-                $user->albumsales()->sync($item->albums);
+                $user->albumsales()->syncWithoutDetaching($item->albums);
                 foreach ($item->albums as $album){
-                    $user->songsales()->sync($album->songs);
+                    $user->songsales()->syncWithoutDetaching($album->songs);
                 }
             } else {
                 $user->songsales()->attach($item->id);
