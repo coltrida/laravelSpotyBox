@@ -25,4 +25,5 @@ Route::get('allSongsBought/{userId}', [AlbumController::class, 'allSongsBought']
 Route::get('prefSw/{songId}/{userId}', [AlbumController::class, 'prefSw']);
 Route::get('prefs/{userId}', [AlbumController::class, 'prefs']);
 Route::post('login', [AlbumController::class, 'login']);
+Route::post('register', [AlbumController::class, 'register']);
 Route::post('/purchase', [AlbumController::class, 'purchase']);
