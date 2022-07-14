@@ -157,7 +157,7 @@ class AlbumController extends Controller
 
         $esitoPagamento = $this->purchaseStripe($item, $user, $request);
 
-        if ($esitoPagamento->stato === 'ok'){
+        if ($esitoPagamento['stato'] === 'ok'){
             if (isset($request->idAlbum)){
                 $user->albumsales()->attach($item->id);
                 $user->artistsales()->sync($item->artist->id);
