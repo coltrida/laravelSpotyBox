@@ -146,9 +146,11 @@ class AlbumController extends Controller
     public function purchase(Request $request)
     {
         if (isset($request->idAlbum)){
-            $item = Album::with('artist')->find($request->input('idAlbum'));
+            $item = Album::with('artist', 'songs')->find($request->input('idAlbum'));
         } elseif (isset($request->idArtist)){
-            $item = Artist::with('albums')->find($request->input('idArtist'));
+            $item = Artist::with(['albums' => function($p){
+                $p->with('songs');
+            }])->find($request->input('idArtist'));
         } else {
             $item = Song::find($request->input('idArtist'));
         }
@@ -161,9 +163,13 @@ class AlbumController extends Controller
             if (isset($request->idAlbum)){
                 $user->albumsales()->attach($item->id);
                 $user->artistsales()->sync($item->artist->id);
+                $user->songsales()->sync($item->songs);
             } elseif (isset($request->idArtist)){
                 $user->artistsales()->attach($item->id);
                 $user->albumsales()->sync($item->albums);
+                foreach ($item->albums as $album){
+                    $user->songsales()->sync($album->songs);
+                }
             } else {
                 $user->songsales()->attach($item->id);
             }
