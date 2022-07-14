@@ -145,17 +145,34 @@ class AlbumController extends Controller
 
     public function purchase(Request $request)
     {
-        $album = Album::with('artist')->find($request->input('idAlbum'));
+        if (isset($request->idAlbum)){
+            $item = Album::with('artist')->find($request->input('idAlbum'));
+        } elseif (isset($request->idArtist)){
+            $item = Artist::with('albums')->find($request->input('idArtist'));
+        } else {
+            $item = Song::find($request->input('idArtist'));
+        }
+
         $user = User::find($request->input('userId'));
-        $esitoPagamento = $this->purchaseStripe($album, $user, $request);
+
+        $esitoPagamento = $this->purchaseStripe($item, $user, $request);
+
         if ($esitoPagamento->stato === 'ok'){
-            $user->albumsales()->attach($album->id);
-            $user->artistsales()->sync($album->artist->id);
+            if (isset($request->idAlbum)){
+                $user->albumsales()->attach($item->id);
+                $user->artistsales()->sync($item->artist->id);
+            } elseif (isset($request->idArtist)){
+                $user->artistsales()->attach($item->id);
+                $user->albumsales()->sync($item->albums);
+            } else {
+                $user->songsales()->attach($item->id);
+            }
+
         }
         return $esitoPagamento;
     }
 
-    public function purchaseStripe($album, $user, $request)
+    public function purchaseStripe($item, $user, $request)
     {
         \Stripe\Stripe::setApiKey('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
 
@@ -180,7 +197,7 @@ class AlbumController extends Controller
             $stripe = new \Stripe\StripeClient(
                 'sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26'
             );
-            $idPrice = $stripe->prices->all(['product' => $album->stripe_id])->data[0]->id;
+            $idPrice = $stripe->prices->all(['product' => $item->stripe_id])->data[0]->id;
             $stripe->invoiceItems->create([
                 'customer' => $user->stripe_id,
                 'price' => $idPrice,

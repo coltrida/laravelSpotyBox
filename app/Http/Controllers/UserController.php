@@ -70,7 +70,7 @@ class UserController extends Controller
         if ($request->input('tipologia') === 'album'){
             $item = Album::find($request->input('idItem'));
         } elseif ($request->input('tipologia') === 'discography'){
-            $item = Artist::find($request->input('idItem'));
+            $item = Artist::with('albums')->find($request->input('idItem'));
         } else {
             $item = Song::find($request->input('idItem'));
         }
@@ -104,8 +104,10 @@ class UserController extends Controller
 
             if ($request->input('tipologia') === 'album'){
                 auth()->user()->albumsales()->attach($item->id);
+                auth()->user()->artistsales()->sync($item->artist->id);
             } elseif ($request->input('tipologia') === 'discography'){
                 auth()->user()->artistsales()->attach($item->id);
+                auth()->user()->albumsales()->sync($item->albums);
             } else {
                 auth()->user()->songsales()->attach($item->id);
             }
