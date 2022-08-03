@@ -34,6 +34,15 @@ class AlbumController extends Controller
         }])->get();
     }
 
+    public function allArtistsPaginate()
+    {
+        return Artist::with(['albums' => function($a){
+            $a->latest()->with(['artist', 'songs' => function($p){
+                $p->with('album', 'preferites:id');
+            }]);
+        }])->paginate(20);
+    }
+
     public function albumsBestSeller()
     {
         return Album::
