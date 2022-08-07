@@ -47,7 +47,9 @@ class AlbumController extends Controller
     {
         return Album::
             with(['artist', 'songs' => function($q){
-                $q->with(['album', 'preferites:id']);
+                $q->with(['album' => function($p){
+                    $p->with('artist');
+                }, 'preferites:id']);
         }])
                 ->withCount('albumsales')
                 ->orderBy('albumsales_count', 'DESC')
