@@ -116,7 +116,9 @@ class AlbumController extends Controller
     public function allSongsBought($userId)
     {
         return User::with(['songsales' => function($p){
-            $p->with('album', 'preferites:id');
+            $p->with(['album' => function($k){
+                $k->with('artist');
+            }, 'preferites:id']);
         }])->find($userId)->songsales;
     }
 
