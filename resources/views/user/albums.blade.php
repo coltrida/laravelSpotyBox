@@ -48,7 +48,7 @@
                 <div class="swiper-slide">
                     <h4 class="text-center bg-warning">{{$item->name}}  <span class="badge text-bg-primary">$ {{$item->cost}}</span></h4>
                     <a href="{{route('paymentAlbum', $item->id)}}">
-                        <img src="{{asset("/storage/covers/$item->id.jpg")}}" />
+                        <img src="{{$item->pathaws}}" />
                     </a>
 
                 </div>
