@@ -36,7 +36,7 @@ class Album extends Model
 
     public function getPathawsAttribute()
     {
-        return Storage::disk('s3')->url("/covers/$this->id.jpg");
+        return "https://bucketspotybox.s3.amazonaws.com/covers/$this->id.jpg";
     }
 
     public function songs()
