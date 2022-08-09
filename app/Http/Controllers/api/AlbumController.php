@@ -85,7 +85,7 @@ class AlbumController extends Controller
                     $f->with('album', 'preferites:id');
                 }]);
             }]);
-        }])->find($userId)->artistsales->paginate(20);
+        }])->find($userId)->artistsales()->paginate(20);
     }
 
     public function lastAlbumsOfMyartistsBought($userId)
