@@ -87,7 +87,13 @@ class AlbumController extends Controller
             }]);
         }])->find($userId)->artistsales;*/
 
-        return User::find($userId)->artistsales()->with('albums')->paginate(20);
+        return User::find($userId)->artistsales()
+            ->with(['albums' => function($d) use($userId){
+                $d->albumbought($userId)->with(['artist', 'songs' => function($f){
+                    $f->with('album', 'preferites:id');
+                }]);
+            }])
+            ->paginate(20);
     }
 
     public function lastAlbumsOfMyartistsBought($userId)
