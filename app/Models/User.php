@@ -82,6 +82,14 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function isUte() {
+        return $this->role === 'user';
+    }
+
+    public function isArtist() {
+        return $this->role === 'artist';
+    }
+
     public function scopeUte($builder)
     {
         return $builder->where('role', 'user');
@@ -105,6 +113,11 @@ class User extends Authenticatable
     public function artistsales()
     {
         return $this->belongsToMany(Artist::class, 'artistsale_users', 'user_id', 'artist_id');
+    }
+
+    public function artist()
+    {
+        return $this->hasOne(Artist::class);
     }
 
 }

@@ -66,6 +66,14 @@ class UserSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
+            [
+                'name' => 'Shakira',
+                'email' => 'shakira@shakira.it',
+                'role' => 'artist',
+                'password' => Hash::make('123456'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
         ]);
     }
 }

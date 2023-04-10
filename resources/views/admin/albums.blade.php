@@ -46,12 +46,12 @@
                 <tbody>
                 @foreach($artist->albums as $album)
                     <tr>
-                        <th scope="row">{{$album->id}}</th>
-                        <td>{{$album->name}}</td>
-                        <td>$ {{$album->cost}}</td>
-                        <td><img src="{{$album->pathaws}}" width="200" alt=""></td>
-                        <td class="text-center">{{$album->songs_count}}</td>
-                        <td>
+                        <th style="vertical-align: middle" scope="row">{{$album->id}}</th>
+                        <td style="vertical-align: middle">{{$album->name}}</td>
+                        <td style="vertical-align: middle">$ {{$album->cost}}</td>
+                        <td style="vertical-align: middle"><img src="{{$album->pathaws}}" width="100" alt=""></td>
+                        <td style="vertical-align: middle" class="text-center">{{$album->songs_count}}</td>
+                        <td style="vertical-align: middle">
                             <div class="d-flex justify-content-around">
                                 <div>
                                     <a class="btn btn-success" href="{{route('admin.songs', $album->id)}}" title="view songs">

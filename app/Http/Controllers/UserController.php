@@ -11,8 +11,13 @@ class UserController extends Controller
 {
     public function home($category=null)
     {
-        $artists = $category ? Artist::where('category', $category)->get() : Artist::get();
-        return view('user.home', compact('artists'));
+        if (\Auth::user()->isUte()){
+            $artists = $category ? Artist::where('category', $category)->get() : Artist::get();
+            return view('user.home', compact('artists'));
+        } elseif (\Auth::user()->isArtist()){
+            $artist = \Auth::user()->artist;
+            return  view('artist.home', compact('artist'));
+        }
     }
 
     public function findArtist(Request $request)

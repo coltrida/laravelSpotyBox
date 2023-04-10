@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -37,15 +38,36 @@ Route::group(
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/home/{category?}', [UserController::class, 'home'])->name('user.home');
-    Route::post('/findArtist', [UserController::class, 'findArtist'])->name('user.findArtist');
-    Route::get('/paymentDiscography/{artist}', [UserController::class, 'paymentDiscography'])->name('paymentDiscography');
-    Route::get('/paymentAlbum/{album}', [UserController::class, 'paymentAlbum'])->name('paymentAlbum');
-    Route::get('/paymentSong/{song}', [UserController::class, 'paymentSong'])->name('paymentSong');
-    Route::post('/purchase', [UserController::class, 'purchase'])->name('purchase');
-    Route::get('/myArtists', [UserController::class, 'artists'])->name('user.artists');
-    Route::get('/myAlbums/{idArtist?}', [UserController::class, 'albums'])->name('user.albums');
-    Route::get('/songs/{idAlbum?}', [UserController::class, 'songs'])->name('user.songs');
+
+    Route::group(
+        [
+            'middleware' => ['auth','verifyIsUte'],
+            'prefix' => 'user'
+        ],
+        function () {
+        Route::post('/findArtist', [UserController::class, 'findArtist'])->name('user.findArtist');
+        Route::get('/paymentDiscography/{artist}', [UserController::class, 'paymentDiscography'])->name('paymentDiscography');
+        Route::get('/paymentAlbum/{album}', [UserController::class, 'paymentAlbum'])->name('paymentAlbum');
+        Route::get('/paymentSong/{song}', [UserController::class, 'paymentSong'])->name('paymentSong');
+        Route::post('/purchase', [UserController::class, 'purchase'])->name('purchase');
+        Route::get('/myArtists', [UserController::class, 'artists'])->name('user.artists');
+        Route::get('/myAlbums/{idArtist?}', [UserController::class, 'albums'])->name('user.albums');
+        Route::get('/songs/{idAlbum?}', [UserController::class, 'songs'])->name('user.songs');
+    });
+
+    Route::group(
+        [
+            'middleware' => ['auth','verifyIsArtist'],
+            'prefix' => 'artist'
+        ],
+        function () {
+//        Route::get('myAlbums', [ArtistController::class, 'myAlbum'])->name('artist.albums');
+        Route::post('myAlbums/insert', [ArtistController::class, 'insertAlbum'])->name('artist.insertAlbum');
+        Route::delete('/albums/{idAlbum}', [ArtistController::class, 'deleteAlbum'])->name('artist.deleteAlbum');
+    });
 });
+
+
 
 Route::get('/webHook', [AdminController::class, 'webHook']);
 

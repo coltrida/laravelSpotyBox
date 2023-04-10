@@ -6,6 +6,8 @@ use App\Models\Album;
 use App\Models\Artist;
 use App\Models\Song;
 use App\Models\User;
+use App\Services\AlbumService;
+use App\Services\ArtistServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
@@ -23,88 +25,32 @@ class AdminController extends Controller
         return view('admin.home', compact('balance'));
     }
 
-    public function artists()
+    public function artists(ArtistServices $artistServices)
     {
         return view('admin.artists', [
-            'artists' => Artist::withCount('albums')->orderBy('name')->get()
+            'artists' => $artistServices->lista()
         ]);
     }
 
     public function insertArtist(Request $request)
     {
-        $productStripe = $this->saveArtistStripe($request);
-        Artist::create([
-            'name' => $request->name,
-            'cost' => (float)$request->cost,
-            'stripe_id' => isset($productStripe->id) ? $productStripe->id : null,
-        ]);
+
         return Redirect::back();
     }
 
-    public function saveArtistStripe($request)
-    {
-        $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
-        return $stripe->products->create(
-            [
-                'name' => 'Discography of '.$request->name,
-                'description' => 'Discography',
-                'metadata' => [
-                    'tipo' => 'discography'
-                ],
-                'default_price_data' => [
-                    'unit_amount' => (float)$request->cost * 100,
-                    'currency' => 'usd',
-                ],
-                'expand' => ['default_price'],
-            ]
-        );
-    }
 
-    public function albums()
+
+    public function albums(ArtistServices $artistServices)
     {
         return view('admin.albums', [
-            'artists' => Artist::with(['albums' => function($q){
-                $q->withCount('songs');
-            }])->orderBy('name')->get()
+            'artists' => $artistServices->listaConAlbum()
         ]);
     }
 
-    public function insertAlbum(Request $request)
+    public function insertAlbum(Request $request, AlbumService $albumService)
     {
-        $productStripe = $this->saveAlbumStripe($request);
-        $album = Album::create([
-            'name' => $request->name,
-            'cost' => (float)$request->cost,
-            'stripe_id' => isset($productStripe->id) ? $productStripe->id : null,
-            'artist_id' => $request->artist_id
-        ]);
-
-        if ($request->hasFile('cover')) {
-            $file = $request->file('cover');
-            $filename = $album->id . '.' . $file->extension();
-           $file->storeAs('covers',$filename, 's3');
-        }
-
+        $albumService->insert($request);
         return Redirect::back();
-    }
-
-    public function saveAlbumStripe($request)
-    {
-        $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
-        return $stripe->products->create(
-            [
-                'name' => 'Album '.$request->name,
-                'description' => 'Album',
-                'metadata' => [
-                    'tipo' => 'album'
-                ],
-                'default_price_data' => [
-                    'unit_amount' => (float)$request->cost * 100,
-                    'currency' => 'usd',
-                ],
-                'expand' => ['default_price'],
-            ]
-        );
     }
 
     public function songs($idAlbum = null)
@@ -166,16 +112,9 @@ class AdminController extends Controller
         return Redirect::back();
     }
 
-    public function deleteAlbum($idAlbum)
+    public function deleteAlbum($idAlbum, AlbumService $albumService)
     {
-        $album = Album::with('songs')->find($idAlbum);
-        if (count($album->songs) > 0){
-            foreach ($album->songs as $song){
-                Storage::disk('public')->delete("/songs/$song->id.mp3");
-            }
-        }
-        Storage::disk('public')->delete("/covers/$idAlbum.jpg");
-        Album::destroy($idAlbum);
+        $albumService->delete($idAlbum);
         return Redirect::back();
     }
 

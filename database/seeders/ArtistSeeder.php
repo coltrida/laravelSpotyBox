@@ -18,16 +18,19 @@ class ArtistSeeder extends Seeder
         Artist::insert([
             [
                 'name' => 'Tommaso Vitali',
+                'user_id' => 6,
                 'cost' => 120,
                 'category' => 'Havy Metal'
             ],
             [
                 'name' => 'Vasco Rossi',
+                'user_id' => 5,
                 'cost' => 100,
                 'category' => 'Pop'
             ],
             [
                 'name' => 'Shakira',
+                'user_id' => 7,
                 'cost' => 80,
                 'category' => 'Pop'
             ]
