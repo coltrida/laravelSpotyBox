@@ -8,6 +8,7 @@ use App\Models\Song;
 use App\Models\User;
 use App\Services\AlbumService;
 use App\Services\ArtistServices;
+use App\Services\SongService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
@@ -53,57 +54,26 @@ class AdminController extends Controller
         return Redirect::back();
     }
 
-    public function songs($idAlbum = null)
+    public function songs(AlbumService $albumService, $idAlbum = null)
     {
         if ($idAlbum){
             return view('admin.songs', [
-                'albums' => Album::with('songs', 'artist')->where('id', $idAlbum)->get()
+                'albums' => $albumService->albumConSongs($idAlbum)
             ]);
         } else {
             return view('admin.songs', [
-                'albums' => Album::with('songs', 'artist')->get()
+                'albums' => $albumService->albumsConSongs()
             ]);
         }
     }
 
-    public function insertSong(Request $request)
+    public function insertSong(Request $request, SongService $songService)
     {
-        $productStripe = $this->saveSongStripe($request);
-        $song = Song::create([
-            'name' => $request->name,
-            'cost' => (float)$request->cost,
-            'stripe_id' => isset($productStripe->id) ? $productStripe->id : null,
-            'album_id' => $request->album_id
-        ]);
-
-        if ($request->hasFile('music')) {
-            $file = $request->file('music');
-            $filename = $song->id . '.mp3';
-
-            $file->storeAs('songs',$filename, 's3');
-        }
-
+        $songService->save($request);
         return Redirect::back();
     }
 
-    public function saveSongStripe($request)
-    {
-        $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
-        return $stripe->products->create(
-            [
-                'name' => 'Song '.$request->name,
-                'description' => 'Song',
-                'metadata' => [
-                    'tipo' => 'song'
-                ],
-                'default_price_data' => [
-                    'unit_amount' => (float)$request->cost * 100,
-                    'currency' => 'usd',
-                ],
-                'expand' => ['default_price'],
-            ]
-        );
-    }
+
 
     public function deleteSong($idSong)
     {

@@ -5,17 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Models\Artist;
 use App\Models\Song;
+use App\Services\AlbumService;
+use App\Services\ArtistServices;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function home($category=null)
+    public function home(ArtistServices $artistServices, $category=null)
     {
         if (\Auth::user()->isUte()){
             $artists = $category ? Artist::where('category', $category)->get() : Artist::get();
             return view('user.home', compact('artists'));
         } elseif (\Auth::user()->isArtist()){
-            $artist = \Auth::user()->artist;
+            $artist = $artistServices->artistConAlbum(\Auth::user()->artist->id);
             return  view('artist.home', compact('artist'));
         }
     }
@@ -33,27 +35,22 @@ class UserController extends Controller
         ]);
     }
 
-    public function albums($idArtist=null)
+    public function albums(AlbumService $albumService)
     {
-        if ($idArtist){
-            return view('user.albums', [
-                'albums' => Artist::with('albums')->find($idArtist)->albums
-            ]);
-        }
         return view('user.albums',[
-            'albums' => Album::all()
+            'albums' => $albumService->myAlbums()
         ]);
     }
 
-    public function songs($idAlbum = null)
+    public function songs(AlbumService $albumService, $idAlbum = null)
     {
         if ($idAlbum){
             return view('user.songs', [
-                'albums' => Album::with('songs', 'artist')->where('id', $idAlbum)->get()
+                'albums' => $albumService->albumConSongs($idAlbum)
             ]);
         } else {
             return view('user.songs', [
-                'albums' => Album::with('songs', 'artist')->get()
+                'albums' => $albumService->albumsConSongs()
             ]);
         }
     }

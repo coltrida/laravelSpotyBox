@@ -54,4 +54,19 @@ class AlbumService
         Storage::disk('public')->delete("/covers/$idAlbum.jpg");
         Album::destroy($idAlbum);
     }
+
+    public function albumConSongs($idAlbum)
+    {
+        return Album::with('songs', 'artist')->where('id', $idAlbum)->get();
+    }
+
+    public function albumsConSongs()
+    {
+        return Album::with('songs', 'artist')->get();
+    }
+
+    public function myAlbums()
+    {
+        return \Auth::user()->albumsales;
+    }
 }

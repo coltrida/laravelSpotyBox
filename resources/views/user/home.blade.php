@@ -22,7 +22,7 @@
             background-position: center;
             background-size: cover;
             width: 300px;
-            height: 300px;
+            height: 350px;
         }
 
         .swiper-slide img {
@@ -86,7 +86,6 @@
                     <a href="{{route('paymentAlbum', $item->id)}}">
                         <img src="{{asset('/images/disco.jpg')}}" />
                     </a>
-
                 </div>
             @endforeach
         </div>

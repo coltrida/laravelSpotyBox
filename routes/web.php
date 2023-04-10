@@ -51,7 +51,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/paymentSong/{song}', [UserController::class, 'paymentSong'])->name('paymentSong');
         Route::post('/purchase', [UserController::class, 'purchase'])->name('purchase');
         Route::get('/myArtists', [UserController::class, 'artists'])->name('user.artists');
-        Route::get('/myAlbums/{idArtist?}', [UserController::class, 'albums'])->name('user.albums');
+        Route::get('/myAlbums', [UserController::class, 'albums'])->name('user.albums');
         Route::get('/songs/{idAlbum?}', [UserController::class, 'songs'])->name('user.songs');
     });
 
@@ -61,9 +61,10 @@ Route::group(['middleware' => ['auth']], function () {
             'prefix' => 'artist'
         ],
         function () {
-//        Route::get('myAlbums', [ArtistController::class, 'myAlbum'])->name('artist.albums');
-        Route::post('myAlbums/insert', [ArtistController::class, 'insertAlbum'])->name('artist.insertAlbum');
+        Route::post('/myAlbums/insert', [ArtistController::class, 'insertAlbum'])->name('artist.insertAlbum');
         Route::delete('/albums/{idAlbum}', [ArtistController::class, 'deleteAlbum'])->name('artist.deleteAlbum');
+        Route::get('/songs/{idAlbum}', [ArtistController::class, 'songsOfAlbum'])->name('artist.album.songs');
+        Route::post('/songs', [ArtistController::class, 'insertSong'])->name('artist.album.insertSong');
     });
 });
 

@@ -33,6 +33,11 @@ class Song extends Model
     use HasFactory;
     protected $guarded = [];
 
+    public function getPlayAttribute()
+    {
+        return asset("/storage/songs/$this->id.mp3");
+    }
+
     public function album()
     {
         return $this->belongsTo(Album::class);

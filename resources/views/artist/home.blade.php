@@ -45,7 +45,7 @@
                             <td style="vertical-align: middle">
                                 <div class="d-flex justify-content-around">
                                     <div>
-                                        <a class="btn btn-success" href="{{route('admin.songs', $album->id)}}" title="view songs">
+                                        <a class="btn btn-success" href="{{route('artist.album.songs', $album->id)}}" title="view songs">
                                             <i class="fa-solid fa-music"></i>
                                         </a>
                                     </div>

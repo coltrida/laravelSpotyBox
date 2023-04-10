@@ -22,7 +22,7 @@
             background-position: center;
             background-size: cover;
             width: 300px;
-            height: 300px;
+            height: 350px;
         }
 
         .swiper-slide img {
@@ -38,7 +38,7 @@
         <div class="swiper-wrapper">
             @foreach($albums as $item)
                 <div class="swiper-slide">
-                    <h4 class="text-center bg-warning">{{$item->name}}  <span class="badge text-bg-primary">$ {{$item->cost}}</span></h4>
+                    <h4 class="text-center bg-warning">{{$item->name}} </h4>
                     <a href="{{route('paymentAlbum', $item->id)}}">
                         <img src="{{$item->pathaws}}" />
                     </a>

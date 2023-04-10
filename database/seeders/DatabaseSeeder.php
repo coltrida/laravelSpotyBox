@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AlbumSeeder::class);
         $this->call(SongSeeder::class);
      //   $this->call(PreferiteSeeder::class);
-     //   $this->call(AlbumsalesSeeder::class);
+        $this->call(AlbumsalesSeeder::class);
      //   $this->call(SongsalesSeeder::class);
         $this->call(ArtistsalesSeeder::class);
 

@@ -18,6 +18,13 @@ class ArtistServices
         }])->orderBy('name')->get();
     }
 
+    public function artistConAlbum($idArtist)
+    {
+        return Artist::with(['albums' => function($q){
+            $q->withCount('songs');
+        }])->orderBy('name')->find($idArtist);
+    }
+
     public function insert($request)
     {
         $productStripe = $this->saveArtistStripe($request);
