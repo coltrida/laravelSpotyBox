@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('layouts.style2');
+//    return view('layouts.style3');
 })->name('welcomePage');
 
 /*Route::get('/dashboard', function () {
@@ -17,6 +18,7 @@ Route::group(
         'prefix' => 'admin'
     ],
     function () {
+        Route::get('/', [AdminController::class, 'home'])->name('admin.home');
         Route::get('/dashboard', [AdminController::class, 'home'])->name('dashboard');
         Route::get('/artists', [AdminController::class, 'artists'])->name('admin.artists');
         Route::post('/artists', [AdminController::class, 'insertArtist'])->name('insertArtist');
@@ -34,12 +36,14 @@ Route::group(
 });
 
 Route::group(['middleware' => ['auth']], function () {
+    Route::get('/home/{category?}', [UserController::class, 'home'])->name('user.home');
+    Route::post('/findArtist', [UserController::class, 'findArtist'])->name('user.findArtist');
     Route::get('/paymentDiscography/{artist}', [UserController::class, 'paymentDiscography'])->name('paymentDiscography');
     Route::get('/paymentAlbum/{album}', [UserController::class, 'paymentAlbum'])->name('paymentAlbum');
     Route::get('/paymentSong/{song}', [UserController::class, 'paymentSong'])->name('paymentSong');
     Route::post('/purchase', [UserController::class, 'purchase'])->name('purchase');
-    Route::get('/artists', [UserController::class, 'artists'])->name('user.artists');
-    Route::get('/albums/{idArtist?}', [UserController::class, 'albums'])->name('user.albums');
+    Route::get('/myArtists', [UserController::class, 'artists'])->name('user.artists');
+    Route::get('/myAlbums/{idArtist?}', [UserController::class, 'albums'])->name('user.albums');
     Route::get('/songs/{idAlbum?}', [UserController::class, 'songs'])->name('user.songs');
 });
 

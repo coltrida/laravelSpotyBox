@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->float('cost')->nullable();
+            $table->string('category')->nullable();
             $table->string('stripe_id')->nullable();
             $table->timestamps();
         });

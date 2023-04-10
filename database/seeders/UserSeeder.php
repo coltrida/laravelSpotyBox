@@ -50,6 +50,22 @@ class UserSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
+            [
+                'name' => 'Vasco Rossi',
+                'email' => 'vasco@vasco.it',
+                'role' => 'artist',
+                'password' => Hash::make('123456'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'Tommaso Vitali',
+                'email' => 'vitali@vitali.it',
+                'role' => 'artist',
+                'password' => Hash::make('123456'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
         ]);
     }
 }

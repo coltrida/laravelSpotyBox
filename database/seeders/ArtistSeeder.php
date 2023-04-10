@@ -17,13 +17,19 @@ class ArtistSeeder extends Seeder
     {
         Artist::insert([
             [
-                'name' => 'Tommaso Vitali'
+                'name' => 'Tommaso Vitali',
+                'cost' => 120,
+                'category' => 'Havy Metal'
             ],
             [
-                'name' => 'Vasco Rossi'
+                'name' => 'Vasco Rossi',
+                'cost' => 100,
+                'category' => 'Pop'
             ],
             [
-                'name' => 'Shakira'
+                'name' => 'Shakira',
+                'cost' => 80,
+                'category' => 'Pop'
             ]
         ]);
     }

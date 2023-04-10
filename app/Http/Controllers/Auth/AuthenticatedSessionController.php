@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return auth()->user()->role == 'admin' ? redirect()->intended(RouteServiceProvider::HOME) : redirect()->route('welcomePage');
+        return auth()->user()->role == 'admin' ? redirect()->intended(RouteServiceProvider::HOME) : redirect()->route('user.home');
     }
 
     /**
@@ -49,6 +49,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/home');
     }
 }

@@ -9,6 +9,18 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function home($category=null)
+    {
+        $artists = $category ? Artist::where('category', $category)->get() : Artist::get();
+        return view('user.home', compact('artists'));
+    }
+
+    public function findArtist(Request $request)
+    {
+        $artists = Artist::where('name', 'like', '%'.$request->name.'%')->get();
+        return view('user.home', compact('artists'));
+    }
+
     public function artists()
     {
         return view('user.artists', [
