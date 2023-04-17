@@ -33,6 +33,16 @@
 @stop
 
 @section('content')
+    <div class="row mb-5 align-items-center">
+        <div class="col text-center" style="vertical-align: middle">
+            <img src="{{$albums[0]->pathaws}}" width="200" alt="">
+        </div>
+        <div class="col text-center">
+            <h2>{{$albums[0]->name}}</h2>
+        </div>
+    </div>
+
+
     <form class="row g-3" method="post" action="{{route('artist.album.insertSong')}}" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="album_id" value="{{$albums[0]->id}}">

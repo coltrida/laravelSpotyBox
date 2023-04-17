@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Album;
+use App\Models\Artist;
 use Illuminate\Support\Facades\Storage;
 
 class AlbumService
@@ -22,25 +23,33 @@ class AlbumService
             $filename = $album->id . '.' . $file->extension();
             Storage::disk('public')->putFileAs('/covers', $file, $filename);
         }
+        return $album;
     }
 
     public function saveAlbumStripe($request)
     {
+        ini_set("memory_limit", "-1");
         $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
-        return $stripe->products->create(
-            [
-                'name' => 'Album '.$request->name,
-                'description' => 'Album',
-                'metadata' => [
-                    'tipo' => 'album'
-                ],
-                'default_price_data' => [
-                    'unit_amount' => (float)$request->cost * 100,
-                    'currency' => 'usd',
-                ],
-                'expand' => ['default_price'],
-            ]
-        );
+
+        try {
+            return $stripe->products->create(
+                [
+                    'name' => 'Album '.$request->name,
+                    'description' => 'Album',
+                    'metadata' => [
+                        'tipo' => 'album'
+                    ],
+                    'default_price_data' => [
+                        'unit_amount' => (float)$request->cost * 100,
+                        'currency' => 'usd',
+                    ],
+                    'expand' => ['default_price'],
+                ]
+            );
+        } catch (\Exception $exception){
+            print_r($exception);
+        }
+
     }
 
     public function delete($idAlbum)
@@ -68,5 +77,10 @@ class AlbumService
     public function myAlbums()
     {
         return \Auth::user()->albumsales;
+    }
+
+    public function albumsOfArtist($idArtist)
+    {
+        return Artist::with('albums')->find($idArtist)->albums;
     }
 }

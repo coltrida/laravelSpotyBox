@@ -34,6 +34,43 @@
 
 @section('content')
     <div class="row">
+        <div class="col">
+            <h2>Find</h2>
+            <form action="{{route('user.findMyArtist')}}" method="post">
+                @csrf
+                <div class="d-flex mb-3">
+                    <div style="width: 70%">
+                        <input type="text" class="form-control" placeholder="Artist Name" name="name">
+                    </div>
+                    <div style="width: 130px; margin-left: 5px">
+                        <button type="submit" style="width: 120px" class="btn btn-primary">Find</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <h2>My Artist</h2>
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+            @foreach($myArtists as $item)
+                <div class="swiper-slide">
+                    <h4 class="text-center bg-warning">{{$item->name}}</h4>
+                    <a href="{{route('user.albumsArtist', $item->id)}}">
+                        <img src="{{asset('/images/disco.jpg')}}" />
+                    </a>
+                </div>
+            @endforeach
+        </div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+    <hr class="my-5">
+
+    <div class="row">
         <div class="col col-lg-9">
             <h2>Category</h2>
             <div class="d-flex mb-3">

@@ -27,20 +27,27 @@ class SongService
 
     public function saveSongStripe($request)
     {
+        ini_set("memory_limit", "-1");
         $stripe = new \Stripe\StripeClient('sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26');
-        return $stripe->products->create(
-            [
-                'name' => 'Song '.$request->name,
-                'description' => 'Song',
-                'metadata' => [
-                    'tipo' => 'song'
-                ],
-                'default_price_data' => [
-                    'unit_amount' => (float)$request->cost * 100,
-                    'currency' => 'usd',
-                ],
-                'expand' => ['default_price'],
-            ]
-        );
+
+        try {
+            return $stripe->products->create(
+                [
+                    'name' => 'Song '.$request->name,
+                    'description' => 'Song',
+                    'metadata' => [
+                        'tipo' => 'song'
+                    ],
+                    'default_price_data' => [
+                        'unit_amount' => (float)$request->cost * 100,
+                        'currency' => 'usd',
+                    ],
+                    'expand' => ['default_price'],
+                ]
+            );
+        } catch (\Exception $exception) {
+            print_r($exception);
+        }
+
     }
 }

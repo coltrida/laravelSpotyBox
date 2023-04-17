@@ -9,17 +9,18 @@ use Illuminate\Support\Facades\Redirect;
 
 class ArtistController extends Controller
 {
+
     public function insertAlbum(Request $request, AlbumService $albumService)
     {
-        $albumService->insert($request);
-        return Redirect::route('user.home');
+        $album = $albumService->insert($request);
+        return Redirect::route('artist.album.songs', ['idAlbum' => $album->id]);
     }
 
-    public function deleteAlbum($idAlbum, AlbumService $albumService)
+    /*public function deleteAlbum($idAlbum, AlbumService $albumService)
     {
         $albumService->delete($idAlbum);
         return Redirect::back();
-    }
+    }*/
 
     public function songsOfAlbum($idAlbum, AlbumService $albumService)
     {

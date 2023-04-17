@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Cashier\Cashier;
+use phpDocumentor\Reflection\Types\Compound;
 use Stripe\Product;
 
 class AdminController extends Controller
@@ -22,8 +23,8 @@ class AdminController extends Controller
         $stripe = new \Stripe\StripeClient(
             'sk_test_tqFIGSA54WEaXkE4LXrZGTtX00gRqA2x26'
         );
-        $balance = $stripe->balance->retrieve();
-        return view('admin.home', compact('balance'));
+//        $balance = $stripe->balance->retrieve();
+        return view('admin.home');
     }
 
     public function artists(ArtistServices $artistServices)

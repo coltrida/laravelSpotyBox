@@ -14,18 +14,27 @@ class UserController extends Controller
     public function home(ArtistServices $artistServices, $category=null)
     {
         if (\Auth::user()->isUte()){
+            $myArtists = $artistServices->myArtistsConAlbum();
             $artists = $category ? Artist::where('category', $category)->get() : Artist::get();
-            return view('user.home', compact('artists'));
+            return view('user.home', compact('artists', 'myArtists'));
         } elseif (\Auth::user()->isArtist()){
             $artist = $artistServices->artistConAlbum(\Auth::user()->artist->id);
             return  view('artist.home', compact('artist'));
         }
     }
 
-    public function findArtist(Request $request)
+    public function findArtist(Request $request, ArtistServices $artistServices)
     {
+        $myArtists = $artistServices->myArtistsConAlbum();
         $artists = Artist::where('name', 'like', '%'.$request->name.'%')->get();
-        return view('user.home', compact('artists'));
+        return view('user.home', compact('artists', 'myArtists'));
+    }
+
+    public function findMyArtist(Request $request, ArtistServices $artistServices)
+    {
+        $myArtists = $artistServices->findMyArtistsConAlbum($request);
+        $artists = $artistServices->listaConAlbum();
+        return view('user.home', compact('artists', 'myArtists'));
     }
 
     public function artists()
@@ -39,6 +48,13 @@ class UserController extends Controller
     {
         return view('user.albums',[
             'albums' => $albumService->myAlbums()
+        ]);
+    }
+
+    public function albumsArtist($idArtist, AlbumService $albumService)
+    {
+        return view('user.myAlbums',[
+            'albums' => $albumService->albumsOfArtist($idArtist)
         ]);
     }
 
